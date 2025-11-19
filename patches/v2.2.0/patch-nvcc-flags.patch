@@ -1,5 +1,5 @@
 diff --git a/setup.py b/setup.py
-index ab569e9..202194a 100644
+index ab569e9..0262d65 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -137,7 +137,9 @@ if not SKIP_CUDA_BUILD:
@@ -59,7 +59,7 @@ index ab569e9..202194a 100644
                      "csrc/qattn/qk_int_sv_f8_cuda_sm90.cu",
                  ],
 -                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": NVCC_FLAGS},
-+                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("9.0", "12.0")},
++                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("9.0")},
                  extra_link_args=['-lcuda'],
              )
          )
