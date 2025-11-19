@@ -66,6 +66,31 @@ PYTORCH_CUDA_VERSIONS: dict[tuple[str, str], list[str]] = {
     ("2.9", "aarch64"): ["12.6", "12.8", "12.9", "13.0"],
 }
 
+# CUDA architectures to build against for each PyTorch version.
+TORCH_CUDA_ARCH_LIST = {
+    # https://github.com/pytorch/pytorch/blob/d990dada86a8ad94882b5c23e859b88c0c255bda/torch/utils/cpp_extension.py#L1938
+    ("2.4", "12.1"): "7.0;7.5;8.0;8.6+PTX",
+    ("2.4", "12.4"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    # https://github.com/pytorch/pytorch/blob/32f585d9346e316e554c8d9bf7548af9f62141fc/torch/utils/cpp_extension.py#L1937
+    ("2.5", "12.1"): "7.0;7.5;8.0;8.6+PTX",
+    ("2.5", "12.4"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    # https://github.com/pytorch/pytorch/blob/1eba9b3aa3c43f86f4a2c807ac8e12c4a7767340/.ci/manywheel/build_cuda.sh#L60
+    ("2.6", "12.4"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    ("2.6", "12.6"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    # https://github.com/pytorch/pytorch/blob/134179474539648ba7dee1317959529fbd0e7f89/.ci/manywheel/build_cuda.sh#L55
+    ("2.7", "12.6"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    ("2.7", "12.8"): "7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX",
+    # https://github.com/pytorch/pytorch/blob/ba56102387ef21a3b04b357e5b183d48f0afefc7/.ci/manywheel/build_cuda.sh#L56
+    ("2.8", "12.6"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    ("2.8", "12.8"): "7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX",
+    ("2.8", "12.9"): "7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX",
+    # https://github.com/pytorch/pytorch/blob/0fabc3ba44823f257e70ce397d989c8de5e362c1/.ci/manywheel/build_cuda.sh#L56
+    ("2.9", "12.6"): "7.0;7.5;8.0;8.6;9.0+PTX",
+    ("2.9", "12.8"): "7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX",
+    ("2.9", "12.9"): "7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX",
+    ("2.9", "13.0"): "7.5;8.0;8.6;9.0;10.0;11.0;12.0+PTX",
+}
+
 # The glibc version to use for each PyTorch version, for manylinux builds.
 # See: https://github.com/pytorch/pytorch/blob/main/RELEASE.md#release-compatibility-matrix
 TORCH_GLIBC_VERSION: dict[str, str] = {
@@ -201,11 +226,18 @@ def main() -> None:
             f"--exclude {lib}" for lib in auditwheel_excludes
         )
 
+        row["TORCH_CUDA_ARCH_LIST"] = TORCH_CUDA_ARCH_LIST[
+            (
+                f"{torch_version.major}.{torch_version.minor}",
+                f"{cuda_version.major}.{cuda_version.minor}",
+            )
+        ]
+
         # RUNNER: the GitHub Actions runner to use.
         if row["target-arch"] == "x86_64":
-            row["RUNNER"] = "depot-ubuntu-24.04-64"
+            row["RUNNER"] = "depot-ubuntu-24.04-8"
         elif row["target-arch"] == "aarch64":
-            row["RUNNER"] = "depot-ubuntu-24.04-arm-64"
+            row["RUNNER"] = "depot-ubuntu-24.04-arm-8"
         else:
             raise ValueError(f"Unknown target arch: {row['target-arch']}")
 

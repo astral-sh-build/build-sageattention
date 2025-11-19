@@ -19,12 +19,10 @@ SAGEATTENTION_VERSION=$1
 # Apply patches.
 patch_dir="${ROOT}/build_scripts/patches/${SAGEATTENTION_VERSION}"
 
-# Not all SageAttention versions need patches.
 if [ ! -d "${patch_dir}" ]; then
-    echo "Warning: nothing to patch: patches/${SAGEATTENTION_VERSION} directory does not exist"
+    echo "No patches to apply for SageAttention version ${SAGEATTENTION_VERSION}"
 else
     for patch in "${patch_dir}"/*.patch; do
-        # Skip if no patch files exist (only .gitkeep)
         if [ -f "${patch}" ]; then
             patch -p1 -d "${ROOT}" -i "${patch}"
         fi

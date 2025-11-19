@@ -1,0 +1,22 @@
+diff --git a/setup.py b/setup.py
+index ab569e9..f78e8ac 100644
+--- a/setup.py
++++ b/setup.py
+@@ -261,6 +261,9 @@ if not SKIP_CUDA_BUILD:
+ 
+     cmdclass = {"build_ext": BuildExtensionSeparateDir} if ext_modules else {}
+ 
++TORCH_MAJOR = int(torch.__version__.split(".")[0])
++TORCH_MINOR = int(torch.__version__.split(".")[1])
++
+ setup(
+     name='sageattention',
+     version='2.2.0',
+@@ -274,4 +277,7 @@ setup(
+     python_requires='>=3.9',
+     ext_modules=ext_modules,
+     cmdclass=cmdclass,
++    install_requires=[
++        f"torch=={TORCH_MAJOR}.{TORCH_MINOR}.*",
++    ],
+ )
