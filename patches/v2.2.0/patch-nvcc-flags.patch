@@ -1,11 +1,11 @@
 diff --git a/setup.py b/setup.py
-index ab569e9..0262d65 100644
+index ab569e9..9e37aec 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -137,7 +137,9 @@ if not SKIP_CUDA_BUILD:
          raise RuntimeError(
              "CUDA 12.8 or higher is required for compute capability 12.0.")
-
+ 
 -    # Add target compute capabilities to NVCC flags.
 +    # Collect architecture-specific flags for each compute capability
 +    arch_flags = {}  # Maps capability -> list of gencode flags
@@ -33,7 +33,7 @@ index ab569e9..0262d65 100644
 +            if any(cap.startswith(prefix) for prefix in arch_prefixes):
 +                flags.extend(cap_flags)
 +        return flags
-
+ 
      # Fused kernels and QAttn variants
      from torch.utils.cpp_extension import CUDAExtension
 @@ -171,7 +184,7 @@ if not SKIP_CUDA_BUILD:
@@ -44,7 +44,7 @@ index ab569e9..0262d65 100644
 +                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("8.0", "8.6", "8.9", "9.0", "12.0")},
              )
          )
-
+ 
 @@ -189,7 +202,7 @@ if not SKIP_CUDA_BUILD:
                      "csrc/qattn/sm89_qk_int8_sv_f8_accum_f32_fuse_v_scale_attn_inst_buf.cu",
                      "csrc/qattn/sm89_qk_int8_sv_f8_accum_f16_fuse_v_scale_attn_inst_buf.cu",
@@ -53,23 +53,18 @@ index ab569e9..0262d65 100644
 +                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("8.9", "9.0", "12.0")},
              )
          )
-
-@@ -201,8 +214,12 @@ if not SKIP_CUDA_BUILD:
+ 
+@@ -201,8 +214,7 @@ if not SKIP_CUDA_BUILD:
                      "csrc/qattn/pybind_sm90.cpp",
                      "csrc/qattn/qk_int_sv_f8_cuda_sm90.cu",
                  ],
 -                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": NVCC_FLAGS},
 -                extra_link_args=['-lcuda'],
 +                extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("9.0")},
-+                extra_link_args=(
-+                    [f'-L{os.environ["CUDA_STUB_LIBDIR"]}', '-lcuda']
-+                    if "CUDA_STUB_LIBDIR" in os.environ
-+                    else ['-lcuda']
-+                ),
              )
          )
-
-@@ -210,7 +227,7 @@ if not SKIP_CUDA_BUILD:
+ 
+@@ -210,7 +222,7 @@ if not SKIP_CUDA_BUILD:
          CUDAExtension(
              name="sageattention._fused",
              sources=["csrc/fused/pybind.cpp", "csrc/fused/fused.cu"],
@@ -77,4 +72,4 @@ index ab569e9..0262d65 100644
 +            extra_compile_args={"cxx": CXX_FLAGS, "nvcc": build_nvcc_flags("8.0", "8.6", "8.9", "9.0", "12.0")},
          )
      )
-
+ 

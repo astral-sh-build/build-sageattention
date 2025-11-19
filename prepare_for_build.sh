@@ -28,35 +28,3 @@ else
         fi
     done
 fi
-
-# Ensure libcuda.so exists in the CUDA stubs directory for linking.
-# This is particularly important for ARM builds where the stub might not exist.
-if [ -n "${CUDA_STUB_LIBDIR}" ] && [ -d "${CUDA_STUB_LIBDIR}" ]; then
-    echo "Ensuring libcuda.so exists in ${CUDA_STUB_LIBDIR}"
-    cd "${CUDA_STUB_LIBDIR}"
-
-    # Check if libcuda.so already exists
-    if [ ! -f "libcuda.so" ]; then
-        # Try to find libcuda.so.1 first (most common)
-        if [ -f "libcuda.so.1" ]; then
-            echo "Creating symlink libcuda.so -> libcuda.so.1"
-            ln -sf libcuda.so.1 libcuda.so
-        else
-            # Look for any libcuda.so.* variant
-            stub_lib=$(ls libcuda.so.* 2>/dev/null | head -n1)
-            if [ -n "${stub_lib}" ]; then
-                echo "Creating symlink libcuda.so -> ${stub_lib}"
-                ln -sf "${stub_lib}" libcuda.so
-            else
-                echo "ERROR: No libcuda stub library found in ${CUDA_STUB_LIBDIR}"
-                echo "Available files:"
-                ls -la
-                exit 1
-            fi
-        fi
-    else
-        echo "libcuda.so already exists"
-    fi
-
-    cd "${ROOT}"
-fi
