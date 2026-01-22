@@ -132,7 +132,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: >
             uv pip install --system "setuptools>=62,<75" "wheel>=0.38,<0.44" "packaging>=21,<24" &&
             if [ "${MATRIX_CUDA_VERSION}" = "129" ] && [ "${MATRIX_TORCH_VERSION}" = "2.10" ]; then uv pip install --system cuda-bindings==12.9.4; fi &&
-            uv pip install --system --index-strategy unsafe-first-match --no-cache-dir torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION} &&
+            uv pip install --system --no-cache-dir torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION} &&
             bash build_scripts/prepare_for_build.sh ${{ steps.sageattention-version.outputs.version }}
           CIBW_ENVIRONMENT: >
             PATH=$PATH:/root/.local/bin
