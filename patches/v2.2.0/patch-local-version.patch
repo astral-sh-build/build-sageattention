@@ -1,15 +1,16 @@
 diff --git a/setup.py b/setup.py
-index 1234567..abcdefg 100644
+index ab569e9..138e141 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -263,9 +263,14 @@ if not SKIP_CUDA_BUILD:
-
- TORCH_MAJOR = int(torch.__version__.split(".")[0])
- TORCH_MINOR = int(torch.__version__.split(".")[1])
-
+@@ -261,9 +261,16 @@ if not SKIP_CUDA_BUILD:
+ 
+     cmdclass = {"build_ext": BuildExtensionSeparateDir} if ext_modules else {}
+ 
 +# Auto-generate local version from CUDA and PyTorch versions.
 +version = "2.2.0"
-+if torch.version.cuda:
++if not SKIP_CUDA_BUILD and torch.version.cuda:
++    TORCH_MAJOR = int(torch.__version__.split(".")[0])
++    TORCH_MINOR = int(torch.__version__.split(".")[1])
 +    version = f"{version}+cu.{torch.version.cuda}.torch.{TORCH_MAJOR}.{TORCH_MINOR}"
 +
  setup(
@@ -17,4 +18,5 @@ index 1234567..abcdefg 100644
 -    version='2.2.0',
 +    version=version,
      author='SageAttention team',
-     author_email='jt_zhang@outlook.com',
+     license='Apache 2.0 License',
+     description='Accurate and efficient plug-and-play low-bit attention.',
