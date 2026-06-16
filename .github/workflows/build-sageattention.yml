@@ -164,10 +164,12 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w /tmp/cibuildwheel/repaired_wheel {wheel} ${CI_AUDITWHEEL_EXCLUDES}"
           CIBW_BUILD_FRONTEND: "build[uv]; args: --no-isolation"
 
-      - name: Embed SBOM into wheel
+      - name: Embed metadata into wheel
         run: |
           for wheel in dist/*.whl; do
             uv run --script build_scripts/embed_patches.py "$wheel" "build_scripts/patches/${SAGEATTENTION_VERSION}" \
+              --license-expression "Apache-2.0" \
+              --license-file "LICENSE:LICENSE" \
               --source-repo "https://github.com/thu-ml/SageAttention" \
               --source-tag "${SAGEATTENTION_VERSION}" \
               --source-commit "${SOURCE_COMMIT}" \
