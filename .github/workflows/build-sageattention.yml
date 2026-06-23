@@ -67,7 +67,7 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="${INPUTS_RELEASE_TAG}"
             # Remove -rN suffix if present
-            SAGEATTENTION_VERSION=$(printf '%s\\n' "${TAG}" | sed -E 's/-r[0-9]+$//')
+            SAGEATTENTION_VERSION=$(sed -E 's/-r[0-9]+$//' <<<"${TAG}")
           else
             SAGEATTENTION_VERSION="v2.2.0"
           fi
