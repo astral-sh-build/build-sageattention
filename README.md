@@ -7,8 +7,8 @@ architectures.
 ## Installation
 
 Following the PyTorch convention, artifacts are published to a separate index for each CUDA
-version. Each wheel has a local version suffix that identifies the CUDA, PyTorch, and C++ ABI it
-was built against, such as `sageattention==2.2.0+cu12.8torch2.10.0cxx11abiTRUE`, and requires the
+version. Each wheel has a local version suffix that identifies the CUDA and PyTorch versions it
+was built against, such as `sageattention==2.2.0+cu.12.8.torch.2.10`, and requires the
 matching PyTorch minor release.
 
 Pre-built wheels are available on [Astral's GPU indexes](https://wheels.astral.sh/index.html).
