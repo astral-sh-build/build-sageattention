@@ -1,0 +1,15 @@
+--- a/setup.py
++++ b/setup.py
+@@ -46,10 +46,10 @@
+     SUPPORTED_ARCHS = {"8.0", "8.6", "8.9", "9.0", "12.0"}
+ 
+     # Compiler flags.
+-    CXX_FLAGS = ["-g", "-O3", "-fopenmp", "-lgomp", "-std=c++17", "-DENABLE_BF16"]
++    CXX_FLAGS = ["-g", "-O3", "-fopenmp", "-lgomp", ("-std=c++20" if tuple(map(int, torch.__version__.split(".")[:2])) >= (2, 13) else "-std=c++17"), "-DENABLE_BF16"]
+     NVCC_FLAGS = [
+         "-O3",
+-        "-std=c++17",
++        ("-std=c++20" if tuple(map(int, torch.__version__.split(".")[:2])) >= (2, 13) else "-std=c++17"),
+         "-U__CUDA_NO_HALF_OPERATORS__",
+         "-U__CUDA_NO_HALF_CONVERSIONS__",
+         "--use_fast_math",
